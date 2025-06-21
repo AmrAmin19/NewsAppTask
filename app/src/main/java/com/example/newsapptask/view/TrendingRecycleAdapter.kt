@@ -1,0 +1,55 @@
+package com.example.newsapptask.view
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.bumptech.glide.Glide
+import com.example.newsapptask.databinding.ItemTrendingNewsBinding
+import com.example.newsapptask.model.Article
+
+
+
+class TrendingDiffUtil : DiffUtil.ItemCallback<Article>()
+{
+    override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
+       return oldItem.title==newItem.title
+    }
+
+    override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
+      return  oldItem == newItem
+    }
+
+
+}
+
+class TrendingRecycleAdapter
+    (
+    var myListenner:(Article)->Unit
+            ) :ListAdapter<Article, TrendingRecycleAdapter.TrendingNewsViewHolder>(TrendingDiffUtil()) {
+
+    lateinit var binding: ItemTrendingNewsBinding
+    class TrendingNewsViewHolder(val binding: ItemTrendingNewsBinding) :ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrendingNewsViewHolder {
+        val inflater : LayoutInflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        binding = ItemTrendingNewsBinding.inflate(inflater,parent,false)
+        return TrendingNewsViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: TrendingNewsViewHolder, position: Int) {
+        var article = getItem(position)
+        holder.binding.trendingNewsTitle.text = article.title
+        holder.binding.trendingNewsDescription.text = article.description
+        holder.binding.trendingNewsLayout.setOnClickListener {
+            myListenner.invoke(article)
+        }
+
+        Glide.with(holder.itemView.context)
+            .load(article.image)
+            .into(binding.trendingNewsImage)
+
+    }
+}

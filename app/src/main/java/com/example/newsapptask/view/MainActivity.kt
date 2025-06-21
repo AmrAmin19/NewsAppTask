@@ -1,0 +1,59 @@
+package com.example.newsapptask.view
+
+import android.os.Bundle
+import android.util.Log
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
+import com.example.newsapptask.R
+import com.example.newsapptask.databinding.ActivityMainBinding
+import com.example.newsapptask.model.ApiState
+import com.example.newsapptask.model.Irepo
+import com.example.newsapptask.model.NewsResponse
+import com.example.newsapptask.model.Repo
+import com.example.newsapptask.model.remote.RemoteData
+import kotlinx.coroutines.launch
+
+class MainActivity : AppCompatActivity() {
+
+    lateinit var binding: ActivityMainBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+
+        val navController = Navigation.findNavController(this, R.id.navHostFragment)
+      
+
+//        repo = Repo.getInstance(RemoteData())
+
+//        lifecycleScope.launch {
+//            repo.getTopHeadlinesByCategory("general").collect{ state ->
+//                when(state){
+//                    is ApiState.Success<NewsResponse> -> {
+//
+//                        Log.d("Amr Test", "${state.data.articles.first().title}")
+//                    }
+//                    is ApiState.Error -> {
+//
+//                            Log.d("Amr Test", "error: ${state.message}") // <-- log the full message
+//
+//
+//                    }
+//                    is ApiState.Loading -> {
+//                        Log.d("Amr Test", "loading")
+//                    }
+//                }
+//            }
+//        }
+
+    }
+}
