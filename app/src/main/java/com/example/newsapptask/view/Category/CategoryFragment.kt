@@ -1,4 +1,4 @@
-package com.example.newsapptask.view
+package com.example.newsapptask.view.Category
 
 import android.os.Bundle
 import android.util.Log
@@ -9,46 +9,58 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.newsapptask.databinding.FragmentHomeBinding
+import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+
+import com.example.newsapptask.databinding.FragmentCategoryBinding
 import com.example.newsapptask.model.ApiState
 import com.example.newsapptask.model.NewsResponse
 import com.example.newsapptask.model.Repo
 import com.example.newsapptask.model.remote.RemoteData
-import com.example.newsapptask.viewModel.HomeFactory
-import com.example.newsapptask.viewModel.HomeViewmodel
+import com.example.newsapptask.viewModel.CategoryFactory
+import com.example.newsapptask.viewModel.CategoryViewmodel
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment() {
+class CategoryFragment : Fragment() {
 
-    lateinit var binding: FragmentHomeBinding
-    lateinit var factory: HomeFactory
-    lateinit var viewModel: HomeViewmodel
-    lateinit var adapter: TrendingRecycleAdapter
+    lateinit var binding: FragmentCategoryBinding
+    lateinit var viewModel: CategoryViewmodel
+    lateinit var factory: CategoryFactory
+    lateinit var adapter: CategoryArticleAdapter
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
 
-        factory=HomeFactory(Repo.getInstance(RemoteData()))
-        viewModel= ViewModelProvider(this,factory).get(HomeViewmodel::class.java)
+        factory= CategoryFactory(Repo.getInstance(RemoteData()))
+        viewModel= ViewModelProvider(this,factory).get(CategoryViewmodel::class.java)
 
-        binding=FragmentHomeBinding.inflate(inflater,container,false)
+        binding=FragmentCategoryBinding.inflate(inflater,container,false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = TrendingRecycleAdapter {
-            val action =HomeFragmentDirections.actionHomeFragmentToDetailsFragment(it)
+        val  args: CategoryFragmentArgs by navArgs()
+        val category = args.category
+
+        adapter = CategoryArticleAdapter{
+            val action =CategoryFragmentDirections.actionCategoryFragmentToDetailsFragment(it)
             findNavController().navigate(action)
         }
-        binding.trendingNewsRecyclerView.adapter = adapter
+        binding.categoryRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.categoryRecyclerView.adapter = adapter
+        binding.titleText.text = category
 
-        viewModel.getTopHeadlinesByCategory("general")
+        binding.backButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+
+        viewModel.getTopHeadlinesByCategory(category)
 
         lifecycleScope.launch{
             viewModel.articles.collect{ recource ->
@@ -57,7 +69,8 @@ class HomeFragment : Fragment() {
                         binding.progressBar.visibility=View.VISIBLE
                     }
                     is  ApiState.Success<NewsResponse> -> {
-                        binding.progressBar.visibility=View.GONE
+                       binding.progressBar.visibility=View.GONE
+                        Log.d("AmrTAG", "${recource.data.articles.first().title}")
                         adapter.submitList(recource.data.articles)
                     }
                     is ApiState.Error -> {

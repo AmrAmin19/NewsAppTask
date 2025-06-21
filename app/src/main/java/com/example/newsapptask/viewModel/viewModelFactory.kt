@@ -13,3 +13,13 @@ class HomeFactory(private val repo: Irepo): ViewModelProvider.Factory {
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
+class CategoryFactory(private val repo: Irepo): ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(CategoryViewmodel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return CategoryViewmodel(repo) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+

@@ -1,4 +1,4 @@
-package com.example.newsapptask.view
+package com.example.newsapptask.view.Home
 
 import android.content.Context
 import android.view.LayoutInflater
